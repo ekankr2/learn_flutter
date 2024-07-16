@@ -22,12 +22,18 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  addName(String newName) {
+    setState(() {
+      name.add(newName);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: ListView.builder(
-          itemCount: 3,
+          itemCount: name.length,
           itemBuilder: (context, i) {
             return ListTile(
                 leading: Image.asset(
@@ -42,7 +48,7 @@ class _MyAppState extends State<MyApp> {
           showDialog(
               context: context,
               builder: (context) {
-                return DialogUI(addOne: addOne,);
+                return DialogUI(addOne: addOne, addName: addName,);
               });
         },
       ),
@@ -51,10 +57,12 @@ class _MyAppState extends State<MyApp> {
 }
 
 class DialogUI extends StatelessWidget {
-  DialogUI({Key? key, this.state, this.total, this.addOne}) : super(key: key);
-  final state;
-  final total;
+  DialogUI({Key? key, this.addOne, required this.addName}) : super(key: key);
   final addOne;
+  final Function(String) addName;
+  var inputData = TextEditingController();
+  var newName = '';
+
 
   @override
   Widget build(BuildContext context) {
@@ -64,8 +72,8 @@ class DialogUI extends StatelessWidget {
         height: 300,
         child: Column(
           children: [
-            TextField(),
-            TextButton(child: Text('완료'), onPressed: () {addOne();}),
+            TextField(onChanged: (text){newName = text;},),
+            TextButton(child: Text('완료'), onPressed: () {addName(newName);}),
             TextButton(
                 child: Text('취소'),
                 onPressed: () {
