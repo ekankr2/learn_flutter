@@ -37,7 +37,7 @@ class _MyAppState extends State<MyApp> {
           itemBuilder: (context, i) {
             return ListTile(
                 leading: Image.asset(
-                  'profile.jpg',
+                  'assets/profile.jpg',
                   width: 100,
                 ),
                 title: Text(name[i]));
@@ -48,7 +48,10 @@ class _MyAppState extends State<MyApp> {
           showDialog(
               context: context,
               builder: (context) {
-                return DialogUI(addOne: addOne, addName: addName,);
+                return DialogUI(
+                  addOne: addOne,
+                  addName: addName,
+                );
               });
         },
       ),
@@ -61,8 +64,6 @@ class DialogUI extends StatelessWidget {
   final addOne;
   final Function(String) addName;
   var inputData = TextEditingController();
-  var newName = '';
-
 
   @override
   Widget build(BuildContext context) {
@@ -72,8 +73,15 @@ class DialogUI extends StatelessWidget {
         height: 300,
         child: Column(
           children: [
-            TextField(onChanged: (text){newName = text;},),
-            TextButton(child: Text('완료'), onPressed: () {addName(newName);}),
+            TextField(
+              controller: inputData,
+            ),
+            TextButton(
+                child: Text('완료'),
+                onPressed: () {
+                  addName(inputData.text);
+                  Navigator.pop(context);
+                }),
             TextButton(
                 child: Text('취소'),
                 onPressed: () {
