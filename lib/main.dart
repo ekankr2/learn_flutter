@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   runApp(MaterialApp(home: MyApp()));
@@ -12,6 +13,16 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  getPermission() async {
+    var status = await Permission.contacts.status;
+    if (status.isGranted) {
+      print('허락됨');
+    } else if (status.isDenied) {
+      print('거절됨');
+      Permission.contacts.request();
+    }
+  }
+
   var total = 3;
   var name = ['김영숙', '홍길동', '피자집'];
   var like = [0, 0, 0];
@@ -31,7 +42,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(actions: [
+        IconButton(onPressed: (){getPermission();}, icon: Icon(Icons.contacts))
+      ],),
       body: ListView.builder(
           itemCount: name.length,
           itemBuilder: (context, i) {
