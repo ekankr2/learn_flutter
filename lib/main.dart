@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:contacts_service/contacts_service.dart';
 
 void main() {
   runApp(MaterialApp(home: MyApp()));
@@ -17,27 +18,40 @@ class _MyAppState extends State<MyApp> {
     var status = await Permission.contacts.status;
     if (status.isGranted) {
       print('허락됨');
+      var contacts = await ContactsService.getContacts();
+      setState(() {
+        name = contacts;
+      });
+
+      print(name[2].givenName);
+      print(name[2].familyName);
+
+      // var newPerson = Contact();
+      // newPerson.givenName = '민수';
+      // newPerson.familyName = '김';
+      // await ContactsService.addContact(newPerson);
+
     } else if (status.isDenied) {
       print('거절됨');
       Permission.contacts.request();
     }
   }
 
-  var total = 3;
-  var name = ['김영숙', '홍길동', '피자집'];
+  addName(String newGivenName, String newFamilyName) async {
+    var status = await Permission.contacts.status;
+    if (status.isGranted) {
+      var newPerson = Contact();
+      newPerson.givenName = newGivenName;
+      newPerson.familyName = newFamilyName;
+      await ContactsService.addContact(newPerson);
+
+    } else if (status.isDenied) {
+      Permission.contacts.request();
+    }
+  }
+
+  var name = [];
   var like = [0, 0, 0];
-
-  addOne() {
-    setState(() {
-      total++;
-    });
-  }
-
-  addName(String newName) {
-    setState(() {
-      name.add(newName);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,16 +67,15 @@ class _MyAppState extends State<MyApp> {
                   'assets/profile.jpg',
                   width: 100,
                 ),
-                title: Text(name[i]));
+                title: Text(name[i].givenName));
           }),
       floatingActionButton: FloatingActionButton(
-        child: Text(total.toString()),
+        child: Text('btn'),
         onPressed: () {
           showDialog(
               context: context,
               builder: (context) {
                 return DialogUI(
-                  addOne: addOne,
                   addName: addName,
                 );
               });
@@ -75,8 +88,9 @@ class _MyAppState extends State<MyApp> {
 class DialogUI extends StatelessWidget {
   DialogUI({Key? key, this.addOne, required this.addName}) : super(key: key);
   final addOne;
-  final Function(String) addName;
-  var inputData = TextEditingController();
+  final Function(String, String) addName;
+  var givenName = TextEditingController();
+  var familyName = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -87,12 +101,15 @@ class DialogUI extends StatelessWidget {
         child: Column(
           children: [
             TextField(
-              controller: inputData,
+              controller: givenName,
+
+            ),TextField(
+              controller: familyName,
             ),
             TextButton(
                 child: Text('완료'),
                 onPressed: () {
-                  addName(inputData.text);
+                  addName(givenName.text, familyName.text);
                   Navigator.pop(context);
                 }),
             TextButton(
