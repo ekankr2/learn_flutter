@@ -67,7 +67,7 @@ class _MyAppState extends State<MyApp> {
                   'assets/profile.jpg',
                   width: 100,
                 ),
-                title: Text(name[i].givenName));
+                title: Text(name[i].givenName ?? '이름이없는놈'));
           }),
       floatingActionButton: FloatingActionButton(
         child: Text('btn'),
@@ -123,3 +123,5 @@ class DialogUI extends StatelessWidget {
     );
   }
 }
+
+// /Applications/Android\ Studio.app/Contents/jbr/Contents/Home/bin/keytool -genkey -v -keystore ./upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload
