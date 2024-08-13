@@ -13,9 +13,7 @@ var theme = ThemeData(
         elevation: 1,
         titleTextStyle: TextStyle(color: Colors.black, fontSize: 25),
         actionsIconTheme: IconThemeData(color: Colors.black)),
-    bottomAppBarTheme: BottomAppBarTheme(
-      elevation: 1,
-      color: Colors.white,
-
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      selectedItemColor: Colors.black
       // surfaceTintColor: Colors.white
     ));

@@ -23,12 +23,13 @@ class MyApp extends StatelessWidget {
         ],
       ),
       body: Theme(data: ThemeData(), child: Container()),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-          children: [Icon(Icons.house), Icon(Icons.shopping_bag)],
-        ),
+      bottomNavigationBar: BottomNavigationBar(
+        showSelectedLabels: false,
+        showUnselectedLabels: false,
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.home_outlined), label: '홈'),
+          BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_outlined), label: '샵')
+        ],
       ),
     );
   }
