@@ -6,7 +6,6 @@ var theme = ThemeData(
     textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
       foregroundColor: Colors.black,
-      backgroundColor: Colors.orange,
     )),
     appBarTheme: AppBarTheme(
         color: Colors.white,
