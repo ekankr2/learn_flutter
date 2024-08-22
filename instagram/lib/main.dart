@@ -21,6 +21,28 @@ class _MyAppState extends State<MyApp> {
   var tab = 0;
   var data = [];
   var userImage;
+  var userContent;
+
+  setUserContent(a) {
+    setState(() {
+      userContent = a;
+    });
+  }
+
+  addMyData() {
+    var myData = {
+      'id': data.length,
+      'image': userImage,
+      'likes': 5,
+      'date': 'July 25',
+      'content': userContent,
+      'liked': false,
+      'user': 'John Kim'
+    };
+    setState(() {
+      data.insert(0, myData);
+    });
+  }
 
   addData(newData) {
     setState(() {
@@ -65,7 +87,11 @@ class _MyAppState extends State<MyApp> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (c) => Upload(userImage: userImage)));
+                      builder: (c) => Upload(
+                            userImage: userImage,
+                            setUserContent: setUserContent,
+                            addMyData: addMyData,
+                          )));
             },
             icon: Icon(Icons.add_box_outlined),
             iconSize: 30,
@@ -139,7 +165,9 @@ class _HomeState extends State<Home> {
           itemBuilder: (c, i) {
             return Column(
               children: [
-                Image.network(widget.data[i]['image']),
+                widget.data[i]['image'].runtimeType == String
+                    ? Image.network(widget.data[i]['image'])
+                    : Image.file(widget.data[i]['image']),
                 Container(
                   constraints: BoxConstraints(maxWidth: 600),
                   padding: EdgeInsets.all(20),
@@ -163,23 +191,34 @@ class _HomeState extends State<Home> {
 }
 
 class Upload extends StatelessWidget {
-  const Upload({Key? key, this.userImage}) : super(key: key);
+  const Upload({Key? key, this.userImage, this.setUserContent, this.addMyData})
+      : super(key: key);
   final userImage;
+  final setUserContent;
+  final addMyData;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(actions: [
+          IconButton(
+              onPressed: () {
+                addMyData();
+              },
+              icon: Icon(Icons.send))
+        ]),
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.file(userImage),
-            Text('이미지업로드화면'),
             IconButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
                 icon: Icon(Icons.close)),
+            TextField(onChanged: (text) {
+              setUserContent(text);
+            })
           ],
         ));
   }
