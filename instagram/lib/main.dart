@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:math';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'style.dart' as style;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/cupertino.dart';
 
 void main() {
   runApp(MaterialApp(theme: style.theme, home: MyApp()));
@@ -184,8 +186,19 @@ class _HomeState extends State<Home> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      GestureDetector(
+                        child: Text(widget.data[i]['user']),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                                pageBuilder: (c, a1, a2) => Profile(),
+                                transitionsBuilder: (c, a1, a2, child) =>
+                                    FadeTransition(opacity: a1, child: child)),
+                          );
+                        },
+                      ),
                       Text('좋아요 ${widget.data[i]['likes']}'),
-                      Text(widget.data[i]['user']),
                       Text(widget.data[i]['content']),
                     ],
                   ),
@@ -230,5 +243,17 @@ class Upload extends StatelessWidget {
             })
           ],
         ));
+  }
+}
+
+class Profile extends StatelessWidget {
+  const Profile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Text('프로필페이지'),
+    );
   }
 }
