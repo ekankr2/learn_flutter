@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -255,6 +256,16 @@ class Store2 extends ChangeNotifier {
 class Store1 extends ChangeNotifier {
   var follower = 0;
   var following = false;
+  var profileImage = [];
+
+  getData() async {
+    var result = await http
+        .get(Uri.parse('https://codingapple1.github.io/app/profile.json'));
+    var result2 = jsonDecode(result.body);
+    profileImage = result2;
+    print(profileImage);
+    notifyListeners();
+  }
 
   follow() {
     print("1123");
@@ -290,7 +301,12 @@ class Profile extends StatelessWidget {
               onPressed: () {
                 context.read<Store1>().follow();
               },
-              child: Text(context.watch<Store1>().following ? '팔로우중' : '팔로우'))
+              child: Text(context.watch<Store1>().following ? '팔로우중' : '팔로우')),
+          ElevatedButton(
+              onPressed: () {
+                context.read<Store1>().getData();
+              },
+              child: Text('가져오기'))
         ],
       ),
     );
