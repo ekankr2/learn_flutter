@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -7,10 +6,12 @@ import 'style.dart' as style;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MaterialApp(theme: style.theme, home: MyApp()));
+  runApp(ChangeNotifierProvider(
+      create: (c) => Store1(),
+      child: MaterialApp(theme: style.theme, home: MyApp())));
 }
 
 class MyApp extends StatefulWidget {
@@ -246,14 +247,45 @@ class Upload extends StatelessWidget {
   }
 }
 
+class Store1 extends ChangeNotifier {
+  var name = 'john kim';
+  var follower = 0;
+  var following = false;
+
+  follow() {
+    print("1123");
+    if (!following) {
+      follower += 1;
+      following = true;
+      return notifyListeners();
+    }
+    follower -= 1;
+    following = false;
+    notifyListeners();
+  }
+}
+
 class Profile extends StatelessWidget {
   const Profile({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Text('프로필페이지'),
+      appBar: AppBar(
+        title: Text(context.watch<Store1>().name),
+      ),
+      body: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          Icon(Icons.person_outlined),
+          Text('팔로워 ${context.watch<Store1>().follower}명'),
+          ElevatedButton(
+              onPressed: () {
+                context.read<Store1>().follow();
+              },
+              child: Text(context.watch<Store1>().following ? '팔로우중' : '팔로우'))
+        ],
+      ),
     );
   }
 }
