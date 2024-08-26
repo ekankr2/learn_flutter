@@ -9,9 +9,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(
-      create: (c) => Store1(),
-      child: MaterialApp(theme: style.theme, home: MyApp())));
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (c) => Store1()),
+    ChangeNotifierProvider(create: (c) => Store2())
+  ], child: MaterialApp(theme: style.theme, home: MyApp())));
 }
 
 class MyApp extends StatefulWidget {
@@ -247,8 +248,11 @@ class Upload extends StatelessWidget {
   }
 }
 
-class Store1 extends ChangeNotifier {
+class Store2 extends ChangeNotifier {
   var name = 'john kim';
+}
+
+class Store1 extends ChangeNotifier {
   var follower = 0;
   var following = false;
 
@@ -272,12 +276,15 @@ class Profile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(context.watch<Store1>().name),
+        title: Text(context.watch<Store2>().name),
       ),
       body: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          Icon(Icons.person_outlined),
+          CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.grey,
+          ),
           Text('팔로워 ${context.watch<Store1>().follower}명'),
           ElevatedButton(
               onPressed: () {
