@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:instagram/notification.dart';
 import 'style.dart' as style;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -77,13 +78,19 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    saveData();
+    initNotification();
     getData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showNotification();
+        },
+        child: Text('+'),
+      ),
       appBar: AppBar(
         centerTitle: false,
         title: Text('Instagram'),
