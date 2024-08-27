@@ -258,7 +258,7 @@ class Store1 extends ChangeNotifier {
   var following = false;
   var profileImage = [];
 
-  getData() async {
+  getPhotos() async {
     var result = await http
         .get(Uri.parse('https://codingapple1.github.io/app/profile.json'));
     var result2 = jsonDecode(result.body);
@@ -268,7 +268,6 @@ class Store1 extends ChangeNotifier {
   }
 
   follow() {
-    print("1123");
     if (!following) {
       follower += 1;
       following = true;
@@ -280,8 +279,19 @@ class Store1 extends ChangeNotifier {
   }
 }
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
   const Profile({super.key});
+
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<Store1>().getPhotos();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -289,26 +299,44 @@ class Profile extends StatelessWidget {
       appBar: AppBar(
         title: Text(context.watch<Store2>().name),
       ),
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundColor: Colors.grey,
-          ),
-          Text('팔로워 ${context.watch<Store1>().follower}명'),
-          ElevatedButton(
-              onPressed: () {
-                context.read<Store1>().follow();
-              },
-              child: Text(context.watch<Store1>().following ? '팔로우중' : '팔로우')),
-          ElevatedButton(
-              onPressed: () {
-                context.read<Store1>().getData();
-              },
-              child: Text('가져오기'))
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(child: ProfileHeader()),
+          SliverGrid(
+              delegate: SliverChildBuilderDelegate(
+                (c, i) => Container(
+                  color: Colors.grey,
+                  child: Image.network(context.watch<Store1>().profileImage[i]),
+                ),
+                childCount: context.watch<Store1>().profileImage.length,
+              ),
+              gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2)),
         ],
       ),
+    );
+  }
+}
+
+class ProfileHeader extends StatelessWidget {
+  const ProfileHeader({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
+      children: [
+        CircleAvatar(
+          radius: 30,
+          backgroundColor: Colors.grey,
+        ),
+        Text('팔로워 ${context.watch<Store1>().follower}명'),
+        ElevatedButton(
+            onPressed: () {
+              context.read<Store1>().follow();
+            },
+            child: Text(context.watch<Store1>().following ? '팔로우중' : '팔로우')),
+      ],
     );
   }
 }
