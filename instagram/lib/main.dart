@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:instagram/notification.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'style.dart' as style;
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -75,9 +75,14 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
+  void _permissionWithNotification() async {
+    await [Permission.notification].request();
+  }
+
   @override
   void initState() {
     super.initState();
+    _permissionWithNotification();
     initNotification();
     getData();
   }

@@ -10,15 +10,15 @@ initNotification() async {
   var androidSetting = AndroidInitializationSettings('@mipmap/ic_launcher');
 
   //ios에서 앱 로드시 유저에게 권한요청하려면
-  var iosSetting = DarwinInitializationSettings(
-    requestAlertPermission: true,
-    requestBadgePermission: true,
-    requestSoundPermission: true,
+  final DarwinInitializationSettings initializationSettingsDarwin = DarwinInitializationSettings(
+      requestSoundPermission: true,
+      requestBadgePermission: true,
+      requestAlertPermission: true,
   );
 
   var initializationSettings = InitializationSettings(
       android: androidSetting,
-      iOS: iosSetting
+      iOS: initializationSettingsDarwin
   );
   await notifications.initialize(
     initializationSettings,
@@ -29,6 +29,7 @@ initNotification() async {
 
 //2. 이 함수 원하는 곳에서 실행하면 알림 뜸
 showNotification() async {
+  print('ok');
   var androidDetails = AndroidNotificationDetails(
     '유니크한 알림 채널 ID',
     '알림종류 설명',
@@ -37,7 +38,7 @@ showNotification() async {
     color: Color.fromARGB(255, 255, 0, 0),
   );
 
-  var iosDetails = DarwinNotificationDetails(
+  const iosDetails = DarwinNotificationDetails(
     presentAlert: true,
     presentBadge: true,
     presentSound: true,
