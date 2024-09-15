@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 final notifications = FlutterLocalNotificationsPlugin();
 
@@ -29,7 +31,6 @@ initNotification() async {
 
 //2. 이 함수 원하는 곳에서 실행하면 알림 뜸
 showNotification() async {
-  print('ok');
   var androidDetails = AndroidNotificationDetails(
     '유니크한 알림 채널 ID',
     '알림종류 설명',
@@ -50,5 +51,34 @@ showNotification() async {
       '제목1',
       '내용1',
       NotificationDetails(android: androidDetails, iOS: iosDetails)
+  );
+}
+
+showNotification2() async {
+
+  tz.initializeTimeZones();
+
+  var androidDetails = const AndroidNotificationDetails(
+    '유니크한 알림 ID',
+    '알림종류 설명',
+    priority: Priority.high,
+    importance: Importance.max,
+    color: Color.fromARGB(255, 255, 0, 0),
+  );
+  var iosDetails = const DarwinNotificationDetails(
+    presentAlert: true,
+    presentBadge: true,
+    presentSound: true,
+  );
+
+  notifications.zonedSchedule(
+      2,
+      '제목2',
+      '내용2',
+      tz.TZDateTime.now(tz.local).add(Duration(seconds: 5)),
+      NotificationDetails(android: androidDetails, iOS: iosDetails),
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime
   );
 }
